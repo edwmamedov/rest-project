@@ -4,3 +4,14 @@ dist/
 build
 .settings
 .project
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+/out/
+
+.gradle
+/build/
+!gradle/wrapper/gradle-wrapper.jar
