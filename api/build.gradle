@@ -1,27 +1,32 @@
-buildscript {
-	ext {
-		springBootVersion = '1.5.16.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
-}
-
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'jsonschema2pojo'
+
+buildscript {
+    ext {
+        springBootVersion = '1.5.16.RELEASE'
+    }
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:0.5.1")
+    }
+}
+
+
 
 group = 'com.trizic'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
-	mavenCentral()
+    mavenLocal()
+    jcenter()
 }
-
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
@@ -32,4 +37,37 @@ dependencies {
 	runtime('com.h2database:h2')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('org.springframework.security:spring-security-test')
+
+    compile 'javax.validation:validation-api:1.1.0.CR2'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.8.8'
+    compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
+
+}
+
+jsonSchema2Pojo {
+
+    usePrimitives = false
+    source = files("${rootProject.file("api-docs/api/v1/advisor/model/schema")}")
+    targetDirectory = file("${project.buildDir}/generated-sources/model")
+    targetPackage = 'com.trizic.model.generated'
+
+
+    includeHashcodeAndEquals = true
+    includeToString = true
+
+    annotationStyle = 'jackson'
+    includeJsr303Annotations = true
+    sourceType = 'jsonschema'
+
+    removeOldOutput = true
+
+    includeConstructors = false
+
+    serializable = false
+
+    includeGetters = false
+    includeSetters = false
+
+    dateType = "java.time.LocalDate"
+    dateTimeType = "java.time.LocalDateTime"
 }
